@@ -1,6 +1,6 @@
 import css from './ContactList.module.css';
 
-const ContactList = ({ contacts, filter, deleteContact, children }) => {
+const ContactList = ({ contacts, filter, deleteContact }) => {
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
@@ -16,7 +16,7 @@ const ContactList = ({ contacts, filter, deleteContact, children }) => {
   return (
     <div className={css.container}>
       <h2 className={css.section_title}>Lista kontaktów</h2>
-      {children}
+
       <ul className={css.contact_list}>
         {filteredContacts.map(({ id, name, number }) => (
           <li key={id} className={css.list_item}>
