@@ -3,6 +3,7 @@ import ContactList from './ContactList/ContactList.jsx';
 import Filter from './filter/Filter.jsx';
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
+import css from './App.module.css';
 
 const INITIAL_STATE = {
   contacts: [
@@ -17,52 +18,73 @@ const INITIAL_STATE = {
 };
 
 class App extends Component {
-  state = { ...INITIAL_STATE };
+  constructor() {
+    super();
+    this.state = {
+      contacts: [],
+      ...INITIAL_STATE,
+    };
+  }
+
+  componentDidMount() {
+    const storedContacts = localStorage.getItem('contacts');
+    if (storedContacts) {
+      this.setState({ contacts: JSON.parse(storedContacts) });
+    }
+  }
+
+  componentDidUpdate() {
+    const { contacts } = this.state;
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }
 
   filterContacts = value => {
     this.setState({ filter: value });
   };
 
   deleteContact = id => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== id),
-    }));
+    this.setState(
+      prevState => ({
+        contacts: prevState.contacts.filter(contact => contact.id !== id),
+      }),
+      () => {
+        localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+      }
+    );
   };
 
-  handleSubmit = contact => {
-    const { name } = contact;
-    const isContactExists = this.state.contacts.some(
-      c => c.name.toLowerCase() === name.toLowerCase()
+  addContact = (name, number) => {
+    const { contacts } = this.state;
+
+    const doesContactExist = contacts.some(
+      c => c.name.toLowerCase() === String(name).toLowerCase()
     );
 
-    if (isContactExists) {
+    if (doesContactExist) {
       alert('Kontakt o takim imieniu już istnieje!');
       return;
     }
 
-    const newContact = { ...contact, id: nanoid() };
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, newContact],
-    }));
-  };
-
-  reset = () => {
-    this.setState({ ...INITIAL_STATE });
+    const newContact = { id: nanoid(), name, number };
+    this.setState({ contacts: [...contacts, newContact] });
   };
 
   render() {
-    console.log('render');
     const { contacts, filter } = this.state;
+
     return (
-      <div>
-        <Form onSubmit={this.handleSubmit}></Form>
+      <div className={css.wrapper}>
+        <Form
+          onSubmit={(name, number) => {
+            this.addContact(name, number);
+          }}
+        />
+        <Filter filterContacts={this.filterContacts} />
         <ContactList
           contacts={contacts}
           filter={filter}
           deleteContact={this.deleteContact}
-        >
-          <Filter filterContacts={this.filterContacts} />
-        </ContactList>
+        ></ContactList>
       </div>
     );
   }

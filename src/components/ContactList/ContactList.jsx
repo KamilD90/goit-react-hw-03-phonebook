@@ -14,19 +14,19 @@ const ContactList = ({ contacts, filter, deleteContact, children }) => {
   }
 
   return (
-    <div>
-      <h2>Contacts</h2>
+    <div className={css.container}>
+      <h2 className={css.section_title}>Lista kontaktów</h2>
       {children}
-      <ul>
+      <ul className={css.contact_list}>
         {filteredContacts.map(({ id, name, number }) => (
-          <li key={id}>
+          <li key={id} className={css.list_item}>
             <p className={css.name}>{name}</p>
             <p className={css.number}>{number}</p>
             <button
               className={css.btn_delete}
               onClick={() => deleteContact(id)}
             >
-              Usuń z listy kontaktów
+              Usuń z kontaktów
             </button>
           </li>
         ))}

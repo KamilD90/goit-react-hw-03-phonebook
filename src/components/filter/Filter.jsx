@@ -8,7 +8,7 @@ const Filter = ({ filterContacts }) => {
 
   return (
     <div className={css.section_filter}>
-      <h4>Wyszukaj w kontaktach</h4>
+      <h4 className={css.title}>Wyszukaj w kontaktach</h4>
       <input
         className={css.search_box}
         type="text"
