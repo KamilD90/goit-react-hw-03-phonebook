@@ -20,8 +20,7 @@ class Form extends Component {
   handleSubmit = event => {
     event.preventDefault();
     const { name, number } = this.state;
-    console.log(`name: ${name}, Number: ${number}`);
-    this.props.onSubmit({ ...this.state });
+    this.props.onSubmit(name, number);
     this.reset();
   };
 
